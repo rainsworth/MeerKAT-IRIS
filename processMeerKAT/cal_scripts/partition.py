@@ -4,6 +4,7 @@ Runs partition on the input MS
 """
 import sys
 import os
+import numpy as np
 
 import config_parser
 from config_parser import validate_args as va
@@ -19,11 +20,25 @@ def do_partition(visname, spw):
     #mvis = os.path.split(visname.replace('.ms', '.mms'))[1]
     msmd.open(visname)
     nscan = msmd.nscans()
+    # Get total BW and chan width for SPW 0
+    # By default this should be the only SPW in MeerKAT data
+    bandwidth = msmd.bandwidths(0)
+    # Assume equal channel widths
+    chanwidth = msmd.chanwidths(0)[0]
     msmd.close()
     msmd.done()
 
-    partition(vis=visname, outputvis=mvis, spw=spw, createmms=True, datacolumn='DATA',
-            numsubms=nscan, separationaxis='scan')
+    maxfracband = 0.1 # Fractional bandwidth in percent
+    maxspwbw = maxfracband * bandwidth
+    nchan = int(np.round(maxspwbw/chanwidth))
+    nspw = int(np.round(bandwidth/maxspwbw))
+
+    mstransform(vis=visname, outputvis=mvis, createmms=True, separationaxis='scan',
+            numsubms=nscan, spw=spw, datacolumn='DATA', regridms=True,
+            width=nchan, nspw=nspw)
+
+    #partition(vis=visname, outputvis=mvis, spw=spw, createmms=True, datacolumn='DATA',
+    #        numsubms=nscan, separationaxis='scan')
 
     return mvis
 
