@@ -5,10 +5,56 @@ Runs partition on the input MS
 import sys
 import os
 import numpy as np
+import re
 
 import config_parser
 from config_parser import validate_args as va
 from cal_scripts import get_fields
+
+def get_effective_bw(spw, chanwidth):
+    """
+    Given an SPW selection, calculates the effective bandwidth across all
+    selection parameters
+    """
+
+    nsel = len(spw.split(','))
+
+    eff_bw = 0
+    for ind, subspw in enumerate(spw.split(',')):
+        is_chan = False
+
+        # Determine whether frequency or channel selection
+        if 'hz' not in subspw.lower():
+            is_chan = True
+            fac = chanwidth
+        else:
+            if re.search("(?i)\d+mhz", subspw):
+                fac = 1E6
+            elif re.search("(?i)\d+ghz", subspw):
+                fac = 1E9
+            elif re.search("(?i)\d+hz", subspw):
+                fac = 1
+            else:
+                raise ValueError("Units format not recognized. ",
+                        "Try one of Hz, MHz, GHz (case insensitive)")
+
+
+        # Remove any unit characters for easier parsing later on
+        subspw = re.sub("(?i)[mghz]", "", subspw)
+
+        for ind2, ss in enumerate(subspw.split(';')):
+            nums = [float(nn) for nn in ss.split('~') if nn.isdigit()]
+            if len(nums) > 1:
+                nums = sorted(nums)
+                eff_bw += (nums[1] - nums[0])*fac
+            else:
+                eff_bw += chanwidth
+
+        if is_chan:
+            eff_bw *= chanwidth
+
+    return eff_bw
+
 
 def do_partition(visname, spw):
     # Get the .ms bit of the filename, case independent
@@ -28,10 +74,13 @@ def do_partition(visname, spw):
     msmd.close()
     msmd.done()
 
-    maxfracband = 0.1 # Fractional bandwidth in percent
-    maxspwbw = maxfracband * bandwidth
+    # Effective bandwidth in Hz
+    eff_bw = get_eff_bw(spw, chanwidth)
+
+    maxfracband = 0.1
+    maxspwbw = maxfracband * eff_bw
     nchan = int(np.round(maxspwbw/chanwidth))
-    nspw = int(np.round(bandwidth/maxspwbw))
+    nspw = int(np.round(eff_bw/maxspwbw))
 
     mstransform(vis=visname, outputvis=mvis, createmms=True, separationaxis='scan',
             numsubms=nscan, spw=spw, datacolumn='DATA', regridms=True,
