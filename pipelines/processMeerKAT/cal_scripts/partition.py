@@ -11,6 +11,12 @@ import config_parser
 from config_parser import validate_args as va
 from cal_scripts import get_fields
 
+# CASA imports
+from taskinit import *
+from tasks import *
+from casac import casac
+msmd = casac.msmetadata()
+
 def do_partition(visname, spw):
     # Get the .ms bit of the filename, case independent
     basename, ext = os.path.splitext(visname)
@@ -51,4 +57,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

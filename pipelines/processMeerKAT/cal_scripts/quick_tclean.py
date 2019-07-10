@@ -9,6 +9,12 @@ from config_parser import validate_args as va
 from cal_scripts import bookkeeping
 import glob
 
+# CASA imports
+from taskinit import *
+from tasks import *
+from casac import casac
+msmd = casac.msmetadata()
+
 def run_tclean(visname, fields, keepmms):
     """
     Run a quick and dirty tclean that will produce an image of the phase cal as well as the target.

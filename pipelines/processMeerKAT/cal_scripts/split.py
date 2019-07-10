@@ -8,6 +8,12 @@ import config_parser
 from cal_scripts import bookkeeping
 from config_parser import validate_args as va
 
+# CASA imports
+from taskinit import *
+from tasks import *
+from casac import casac
+msmd = casac.msmetadata()
+
 def split_vis(visname, spw, fields, specavg, timeavg, keepmms):
     outputbase = os.path.splitext(visname)[0]
 

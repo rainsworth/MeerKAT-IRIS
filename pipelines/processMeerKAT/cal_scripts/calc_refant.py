@@ -11,6 +11,12 @@ from cal_scripts import bookkeeping
 import os
 import numpy as np
 
+# CASA imports
+from taskinit import *
+from tasks import *
+from casac import casac
+msmd = casac.msmetadata()
+
 import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)-15s %(levelname)s: %(message)s", level=logging.INFO)
@@ -121,4 +127,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

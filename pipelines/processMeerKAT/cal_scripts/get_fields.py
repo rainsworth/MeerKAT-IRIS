@@ -18,6 +18,10 @@ logging.basicConfig(format="%(asctime)-15s %(levelname)s: %(message)s", level=lo
 import casac
 msmd = casac.casac.msmetadata()
 
+# CASA imports
+from taskinit import *
+from tasks import *
+
 def get_fields(MS):
 
     """Extract field numbers from intent, including calibrators for bandpass, flux, phase & amplitude, and the target. Only the

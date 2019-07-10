@@ -9,6 +9,11 @@ import glob
 PLOT_DIR = 'plots'
 EXTN = 'pdf'
 
+# CASA imports
+from taskinit import *
+from tasks import *
+from casac import casac
+msmd = casac.msmetadata()
 
 def sort_by_antenna(fname):
 

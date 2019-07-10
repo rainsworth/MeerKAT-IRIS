@@ -15,6 +15,12 @@ import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)-15s %(levelname)s: %(message)s", level=logging.INFO)
 
+# CASA imports
+from taskinit import *
+from tasks import *
+from casac import casac
+msmd = casac.msmetadata()
+
 def validateinput():
     """
     Parse the input config file (command line argument) and validate that the

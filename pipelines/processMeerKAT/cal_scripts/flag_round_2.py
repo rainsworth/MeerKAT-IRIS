@@ -8,6 +8,10 @@ import config_parser
 from config_parser import validate_args as va
 from cal_scripts import bookkeeping
 
+# CASA imports
+from taskinit import *
+from tasks import *
+
 def do_pre_flag_2(visname, fields):
     clipfluxcal   = [0., 50.]
     clipphasecal  = [0., 50.]
