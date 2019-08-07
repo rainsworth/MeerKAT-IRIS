@@ -27,7 +27,7 @@ Note: We also use the casameer-5.4.1.xvfb.simg Singularity container image to lo
 
 The processMeerKAT pipeline can generate the general system error: Too many open files. You can see the current limits with (in bash): ```ulimit -a```. To increase the max system limits and avoid this error, set:
 ```bash
-set: ulimit -n 4096
+ulimit -n 4096
 ```
 This setting is current terminal only, and you will need to reset every time you open a new terminal or screen or add it to your bashrc.
 
